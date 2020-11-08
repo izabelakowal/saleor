@@ -48,8 +48,7 @@ def create_permissions_mapping(User, GroupData):
 def create_group_name(permissions):
     """Create group name based on permissions."""
     formatted_names = [perm.name.rstrip(".").lower() for perm in permissions]
-    group_name = ", ".join(formatted_names).capitalize()
-    return group_name
+    return ", ".join(formatted_names).capitalize()
 
 
 def get_group_with_given_permissions(permissions, groups):

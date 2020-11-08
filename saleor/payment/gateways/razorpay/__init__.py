@@ -72,8 +72,7 @@ def clean_razorpay_response(response: Dict):
 
 def get_client(public_key: str, private_key: str, **_):
     """Create a Razorpay client from set-up application keys."""
-    razorpay_client = razorpay.Client(auth=(public_key, private_key))
-    return razorpay_client
+    return razorpay.Client(auth=(public_key, private_key))
 
 
 def get_client_token(**_):

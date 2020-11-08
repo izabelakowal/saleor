@@ -111,10 +111,8 @@ class Payment(models.Model):
         # There is no authorized amount anymore when capture is succeeded
         # since capture can only be made once, even it is a partial capture
         if any(
-            [
-                txn.kind == TransactionKind.CAPTURE and txn.is_success
-                for txn in transactions
-            ]
+            txn.kind == TransactionKind.CAPTURE and txn.is_success
+            for txn in transactions
         ):
             return money
 
@@ -143,10 +141,8 @@ class Payment(models.Model):
     @property
     def is_authorized(self):
         return any(
-            [
-                txn.kind == TransactionKind.AUTH and txn.is_success
-                for txn in self.transactions.all()
-            ]
+            txn.kind == TransactionKind.AUTH and txn.is_success
+            for txn in self.transactions.all()
         )
 
     @property
@@ -157,9 +153,7 @@ class Payment(models.Model):
         return self.is_active and self.not_charged
 
     def can_capture(self):
-        if not (self.is_active and self.not_charged):
-            return False
-        return True
+        return bool((self.is_active and self.not_charged))
 
     def can_void(self):
         return self.is_active and self.not_charged and self.is_authorized

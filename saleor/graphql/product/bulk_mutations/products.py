@@ -281,7 +281,7 @@ class ProductVariantBulkCreate(BaseMutation):
                 info, None, variant_data, errors, index
             )
 
-            cleaned_inputs.append(cleaned_input if cleaned_input else None)
+            cleaned_inputs.append(cleaned_input or None)
 
             if not variant_data.sku:
                 continue
@@ -406,11 +406,11 @@ class ProductVariantStocksCreate(BaseMutation):
     def check_for_duplicates(cls, warehouse_ids, errors):
         duplicates = {id for id in warehouse_ids if warehouse_ids.count(id) > 1}
         error_msg = "Duplicated warehouse ID."
-        indexes = []
-        for duplicated_id in duplicates:
-            indexes.append(
-                [i for i, id in enumerate(warehouse_ids) if id == duplicated_id][-1]
-            )
+        indexes = [
+            [i for i, id in enumerate(warehouse_ids) if id == duplicated_id][-1]
+            for duplicated_id in duplicates
+        ]
+
         cls.update_errors(
             errors, error_msg, "warehouse", StockErrorCode.UNIQUE, indexes
         )

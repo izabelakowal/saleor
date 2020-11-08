@@ -7,8 +7,7 @@ from ..utils import filter_by_query_param
 
 def filter_page_search(qs, _, value):
     page_fields = ["content", "slug", "title"]
-    qs = filter_by_query_param(qs, value, page_fields)
-    return qs
+    return filter_by_query_param(qs, value, page_fields)
 
 
 class PageFilter(django_filters.FilterSet):

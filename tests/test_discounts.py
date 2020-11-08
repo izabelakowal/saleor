@@ -203,9 +203,9 @@ def test_add_voucher_usage_by_customer(voucher, customer_user):
 
 
 def test_add_voucher_usage_by_customer_raise_not_applicable(voucher_customer):
-    voucher = voucher_customer.voucher
-    customer_email = voucher_customer.customer_email
     with pytest.raises(NotApplicable):
+        voucher = voucher_customer.voucher
+        customer_email = voucher_customer.customer_email
         add_voucher_usage_by_customer(voucher, customer_email)
 
 

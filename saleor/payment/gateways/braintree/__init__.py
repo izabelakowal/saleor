@@ -57,11 +57,10 @@ def get_error_for_client(errors: List) -> str:
     """Filter all error messages and decides which one is visible for the client."""
     if not errors:
         return ""
-    default_msg = "Unable to process transaction. Please try again in a moment"
     for error in errors:
         if error["code"] in ERROR_CODES_WHITELIST:
             return ERROR_CODES_WHITELIST[error["code"]] or error["message"]
-    return default_msg
+    return "Unable to process transaction. Please try again in a moment"
 
 
 def extract_gateway_response(braintree_result) -> Dict:
@@ -99,8 +98,7 @@ def get_braintree_gateway(sandbox_mode, merchant_id, public_key, private_key):
         public_key=public_key,
         private_key=private_key,
     )
-    gateway = braintree_sdk.BraintreeGateway(config=config)
-    return gateway
+    return braintree_sdk.BraintreeGateway(config=config)
 
 
 def get_client_token(
@@ -266,8 +264,7 @@ def refund(payment_information: PaymentData, config: GatewayConfig) -> GatewayRe
 def process_payment(
     payment_information: PaymentData, config: GatewayConfig
 ) -> GatewayResponse:
-    auth_resp = authorize(payment_information, config)
-    return auth_resp
+    return authorize(payment_information, config)
 
 
 def list_client_sources(

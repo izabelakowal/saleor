@@ -76,13 +76,13 @@ class DigitalContentCreate(BaseMutation):
 
         required_fields = ["max_downloads", "url_valid_days", "automatic_fulfillment"]
 
-        if not all(field in data for field in required_fields):
-            msg = (
-                "Use default settings is disabled. Provide all "
-                "missing configuration fields: "
-            )
+        if any(field not in data for field in required_fields):
             missing_fields = set(required_fields).difference(set(data))
             if missing_fields:
+                msg = (
+                    "Use default settings is disabled. Provide all "
+                    "missing configuration fields: "
+                )
                 msg += "{}, " * len(missing_fields)
                 raise ValidationError(
                     msg.format(*missing_fields), code=ProductErrorCode.REQUIRED
@@ -170,13 +170,13 @@ class DigitalContentUpdate(BaseMutation):
 
         required_fields = ["max_downloads", "url_valid_days", "automatic_fulfillment"]
 
-        if not all(field in data for field in required_fields):
-            msg = (
-                "Use default settings is disabled. Provide all "
-                "missing configuration fields: "
-            )
+        if any(field not in data for field in required_fields):
             missing_fields = set(required_fields).difference(set(data))
             if missing_fields:
+                msg = (
+                    "Use default settings is disabled. Provide all "
+                    "missing configuration fields: "
+                )
                 msg += "{}, " * len(missing_fields)
                 raise ValidationError(
                     msg.format(*missing_fields), code=ProductErrorCode.REQUIRED

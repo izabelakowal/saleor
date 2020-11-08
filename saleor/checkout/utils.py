@@ -618,8 +618,8 @@ def _process_user_data_for_order(checkout: Checkout):
 def validate_gift_cards(checkout: Checkout):
     """Check if all gift cards assigned to checkout are available."""
     if (
-        not checkout.gift_cards.count()
-        == checkout.gift_cards.active(date=date.today()).count()
+        checkout.gift_cards.count()
+        != checkout.gift_cards.active(date=date.today()).count()
     ):
         msg = "Gift card has expired. Order placement cancelled."
         raise NotApplicable(msg)
@@ -659,7 +659,7 @@ def create_line_for_order(checkout_line: "CheckoutLine", discounts) -> OrderLine
         if not isinstance(unit_price, Decimal)
         else Decimal("0.0")
     )
-    line = OrderLine(
+    return OrderLine(
         product_name=product_name,
         variant_name=variant_name,
         translated_product_name=translated_product_name,
@@ -671,8 +671,6 @@ def create_line_for_order(checkout_line: "CheckoutLine", discounts) -> OrderLine
         unit_price=unit_price,  # type: ignore
         tax_rate=tax_rate,
     )
-
-    return line
 
 
 def prepare_order_data(
@@ -802,7 +800,7 @@ def is_fully_paid(
     Note that these payments may not be captured or charged at all.
     """
     payments = [payment for payment in checkout.payments.all() if payment.is_active]
-    total_paid = sum([p.total for p in payments])
+    total_paid = sum(p.total for p in payments)
     checkout_total = (
         calculations.checkout_total(checkout=checkout, lines=lines, discounts=discounts)
         - checkout.get_total_gift_cards_balance()

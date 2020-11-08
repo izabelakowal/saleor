@@ -151,13 +151,12 @@ def format_permissions_for_display(permissions):
         formated_codename=Concat("content_type__app_label", Value("."), "codename")
     ).values("name", "formated_codename")
 
-    formatted_permissions = [
+    return [
         Permission(
             code=PermissionEnum.get(data["formated_codename"]), name=data["name"]
         )
         for data in permissions_data
     ]
-    return formatted_permissions
 
 
 def create_jwt_payload(user, context=None):

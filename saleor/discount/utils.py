@@ -69,7 +69,7 @@ def get_product_discounts(
     discounts: Iterable[DiscountInfo]
 ) -> Money:
     """Return discount values for all discounts applicable to a product."""
-    product_collections = set(pc.id for pc in collections)
+    product_collections = {pc.id for pc in collections}
     for discount in discounts or []:
         try:
             yield get_product_discount_on_sale(product, product_collections, discount)
@@ -133,8 +133,7 @@ def get_products_voucher_discount(voucher: "Voucher", prices: Iterable[Money]) -
     if voucher.apply_once_per_order:
         return voucher.get_discount_amount_for(min(prices))
     discounts = (voucher.get_discount_amount_for(price) for price in prices)
-    total_amount = sum(discounts, zero_money(voucher.currency))
-    return total_amount
+    return sum(discounts, zero_money(voucher.currency))
 
 
 def _fetch_categories(sale_pks: Iterable[str]) -> Dict[int, Set[int]]:

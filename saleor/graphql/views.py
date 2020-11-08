@@ -336,16 +336,12 @@ def obj_set(obj, path, value, do_not_replace):
     current_path = path[0]
     current_value = get_shallow_property(obj, current_path)
 
-    if len(path) == 1:
-        if current_value is None or not do_not_replace:
-            obj[current_path] = value
+    if len(path) == 1 and (current_value is None or not do_not_replace):
+        obj[current_path] = value
 
     if current_value is None:
         try:
-            if isinstance(path[1], int):
-                obj[current_path] = []
-            else:
-                obj[current_path] = {}
+            obj[current_path] = [] if isinstance(path[1], int) else {}
         except IndexError:
             pass
     return obj_set(obj[current_path], path[1:], value, do_not_replace)

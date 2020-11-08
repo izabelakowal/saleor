@@ -113,7 +113,7 @@ class TranslationQueries(graphene.ObjectType):
     @permission_required(SitePermissions.MANAGE_TRANSLATIONS)
     def resolve_translation(self, info, id, kind, **_kwargs):
         _type, kind_id = graphene.Node.from_global_id(id)
-        if not _type == kind:
+        if _type != kind:
             return None
         models = {
             TranslatableKinds.PRODUCT.value: Product,

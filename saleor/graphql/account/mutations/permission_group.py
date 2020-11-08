@@ -223,9 +223,7 @@ class PermissionGroupUpdate(PermissionGroupCreate):
         if errors:
             raise ValidationError(errors)
 
-        cleaned_input = super().clean_input(info, instance, data)
-
-        return cleaned_input
+        return super().clean_input(info, instance, data)
 
     @classmethod
     def ensure_requestor_can_manage_group(
@@ -342,11 +340,11 @@ class PermissionGroupUpdate(PermissionGroupCreate):
 
         remove_users = cleaned_input["remove_users"]
         add_users = cleaned_input.get("add_users")
-        manage_staff_permission = AccountPermissions.MANAGE_STAFF.value
-
         # check if user with manage staff will be added to the group
         if add_users:
-            if any([user.has_perm(manage_staff_permission) for user in add_users]):
+            manage_staff_permission = AccountPermissions.MANAGE_STAFF.value
+
+            if any(user.has_perm(manage_staff_permission) for user in add_users):
                 return True
 
         permissions = get_not_manageable_permissions_after_removing_users_from_group(

@@ -114,11 +114,7 @@ def _assert_num_queries(context, *, config, num, exact=True, info=None):
     verbose = config.getoption("verbose") > 0
     num_performed = len(context)
 
-    if exact:
-        failed = num != num_performed
-    else:
-        failed = num_performed > num
-
+    failed = num != num_performed if exact else num_performed > num
     if not failed:
         return
 
@@ -348,13 +344,12 @@ def customer_user(address):  # pylint: disable=W0613
 
 @pytest.fixture
 def user_checkout(customer_user):
-    checkout = Checkout.objects.create(
+    return Checkout.objects.create(
         user=customer_user,
         billing_address=customer_user.default_billing_address,
         shipping_address=customer_user.default_shipping_address,
         note="Test notes",
     )
-    return checkout
 
 
 @pytest.fixture
@@ -485,10 +480,9 @@ def color_attribute_without_values(db):  # pylint: disable=W0613
 
 @pytest.fixture
 def pink_attribute_value(color_attribute):  # pylint: disable=W0613
-    value = AttributeValue.objects.create(
+    return AttributeValue.objects.create(
         slug="pink", name="Pink", attribute=color_attribute, value="#FF69B4"
     )
-    return value
 
 
 @pytest.fixture
@@ -620,10 +614,9 @@ def product_type(color_attribute, size_attribute):
 
 @pytest.fixture
 def product_type_without_variant():
-    product_type = ProductType.objects.create(
+    return ProductType.objects.create(
         name="Type", slug="type", has_variants=False, is_shipping_required=True
     )
-    return product_type
 
 
 @pytest.fixture
@@ -777,10 +770,9 @@ def product_with_default_variant(product_type_without_variant, category, warehou
 
 @pytest.fixture
 def variant(product) -> ProductVariant:
-    product_variant = ProductVariant.objects.create(
+    return ProductVariant.objects.create(
         product=product, sku="SKU_A", cost_price=Money(1, "USD")
     )
-    return product_variant
 
 
 @pytest.fixture
@@ -892,9 +884,11 @@ def product_list(product_type, category, warehouse):
             ]
         )
     )
-    stocks = []
-    for variant in variants:
-        stocks.append(Stock(warehouse=warehouse, product_variant=variant, quantity=100))
+    stocks = [
+        Stock(warehouse=warehouse, product_variant=variant, quantity=100)
+        for variant in variants
+    ]
+
     Stock.objects.bulk_create(stocks)
 
     for product in products:
@@ -940,7 +934,7 @@ def product_with_image(product, image, media_root):
 
 @pytest.fixture
 def unavailable_product(product_type, category):
-    product = Product.objects.create(
+    return Product.objects.create(
         name="Test product",
         slug="test-product-5",
         price=Money("10.00", "USD"),
@@ -948,7 +942,6 @@ def unavailable_product(product_type, category):
         is_published=False,
         category=category,
     )
-    return product
 
 
 @pytest.fixture
@@ -1415,13 +1408,12 @@ def permission_group_manage_users(permission_manage_users, staff_users):
 
 @pytest.fixture
 def collection(db):
-    collection = Collection.objects.create(
+    return Collection.objects.create(
         name="Collection",
         slug="collection",
         is_published=True,
         description="Test description",
     )
-    return collection
 
 
 @pytest.fixture
@@ -1432,26 +1424,30 @@ def collection_with_products(db, collection, product_list_published):
 
 @pytest.fixture
 def collection_with_image(db, image, media_root):
-    collection = Collection.objects.create(
+    return Collection.objects.create(
         name="Collection",
         slug="collection",
         description="Test description",
         background_image=image,
         is_published=True,
     )
-    return collection
 
 
 @pytest.fixture
 def collection_list(db):
-    collections = Collection.objects.bulk_create(
+    return Collection.objects.bulk_create(
         [
-            Collection(name="Collection 1", slug="collection-1", is_published="True"),
-            Collection(name="Collection 2", slug="collection-2", is_published="True"),
-            Collection(name="Collection 3", slug="collection-3", is_published="True"),
+            Collection(
+                name="Collection 1", slug="collection-1", is_published="True"
+            ),
+            Collection(
+                name="Collection 2", slug="collection-2", is_published="True"
+            ),
+            Collection(
+                name="Collection 3", slug="collection-3", is_published="True"
+            ),
         ]
     )
-    return collections
 
 
 @pytest.fixture
@@ -1465,18 +1461,18 @@ def collection_list_unpublished(collection_list):
 
 @pytest.fixture
 def draft_collection(db):
-    collection = Collection.objects.create(
+    return Collection.objects.create(
         name="Draft collection", slug="draft-collection", is_published=False
     )
-    return collection
 
 
 @pytest.fixture
 def unpublished_collection():
-    collection = Collection.objects.create(
-        name="Unpublished collection", slug="unpublished-collection", is_published=False
+    return Collection.objects.create(
+        name="Unpublished collection",
+        slug="unpublished-collection",
+        is_published=False,
     )
-    return collection
 
 
 @pytest.fixture
@@ -1487,8 +1483,7 @@ def page(db):
         "content": "test content",
         "is_published": True,
     }
-    page = Page.objects.create(**data)
-    return page
+    return Page.objects.create(**data)
 
 
 @pytest.fixture
@@ -1505,20 +1500,18 @@ def page_list(db):
         "content": "test content",
         "is_published": True,
     }
-    pages = Page.objects.bulk_create([Page(**data_1), Page(**data_2)])
-    return pages
+    return Page.objects.bulk_create([Page(**data_1), Page(**data_2)])
 
 
 @pytest.fixture
 def page_list_unpublished(db):
-    pages = Page.objects.bulk_create(
+    return Page.objects.bulk_create(
         [
             Page(slug="page-1", title="Page 1", is_published=False),
             Page(slug="page-2", title="Page 2", is_published=False),
             Page(slug="page-3", title="Page 3", is_published=False),
         ]
     )
-    return pages
 
 
 @pytest.fixture
@@ -1716,12 +1709,11 @@ def digital_content(category, media_root, warehouse) -> DigitalContent:
     assert product_variant.is_digital()
 
     image_file, image_name = create_image()
-    d_content = DigitalContent.objects.create(
+    return DigitalContent.objects.create(
         content_file=image_file,
         product_variant=product_variant,
         use_default_settings=True,
     )
-    return d_content
 
 
 @pytest.fixture
@@ -1889,8 +1881,7 @@ def customer_wishlist_item(customer_wishlist, product_with_single_variant):
     product = product_with_single_variant
     assert product.variants.count() == 1
     variant = product.variants.first()
-    item = customer_wishlist.add_variant(variant)
-    return item
+    return customer_wishlist.add_variant(variant)
 
 
 @pytest.fixture
@@ -1947,12 +1938,11 @@ def warehouses_with_shipping_zone(warehouses, shipping_zone):
 
 @pytest.fixture
 def warehouse_no_shipping_zone(address):
-    warehouse = Warehouse.objects.create(
+    return Warehouse.objects.create(
         address=address,
         name="Warehouse withot shipping zone",
         email="test2@example.com",
     )
-    return warehouse
 
 
 @pytest.fixture

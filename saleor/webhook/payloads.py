@@ -90,19 +90,24 @@ def generate_order_payload(order: "Order"):
         "private_metadata",
         "metadata",
     )
-    order_data = serializer.serialize(
+    return serializer.serialize(
         [order],
         fields=order_fields,
         additional_fields={
-            "shipping_method": (lambda o: o.shipping_method, shipping_method_fields),
+            "shipping_method": (
+                lambda o: o.shipping_method,
+                shipping_method_fields,
+            ),
             "lines": (lambda o: o.lines.all(), line_fields),
             "payments": (lambda o: o.payments.all(), payment_fields),
             "shipping_address": (lambda o: o.shipping_address, ADDRESS_FIELDS),
             "billing_address": (lambda o: o.billing_address, ADDRESS_FIELDS),
-            "fulfillments": (lambda o: o.fulfillments.all(), fulfillment_fields),
+            "fulfillments": (
+                lambda o: o.fulfillments.all(),
+                fulfillment_fields,
+            ),
         },
     )
-    return order_data
 
 
 def generate_checkout_payload(checkout: "Checkout"):
@@ -123,7 +128,7 @@ def generate_checkout_payload(checkout: "Checkout"):
     shipping_method_fields = ("name", "type", "currency", "price_amount")
     lines_dict_data = serialize_checkout_lines(checkout)
 
-    checkout_data = serializer.serialize(
+    return serializer.serialize(
         [checkout],
         fields=checkout_fields,
         obj_id_name="token",
@@ -131,19 +136,21 @@ def generate_checkout_payload(checkout: "Checkout"):
             "user": (lambda c: c.user, user_fields),
             "billing_address": (lambda c: c.billing_address, ADDRESS_FIELDS),
             "shipping_address": (lambda c: c.shipping_address, ADDRESS_FIELDS),
-            "shipping_method": (lambda c: c.shipping_method, shipping_method_fields),
+            "shipping_method": (
+                lambda c: c.shipping_method,
+                shipping_method_fields,
+            ),
         },
         extra_dict_data={
             # Casting to list to make it json-serializable
             "lines": list(lines_dict_data)
         },
     )
-    return checkout_data
 
 
 def generate_customer_payload(customer: "User"):
     serializer = PayloadSerializer()
-    data = serializer.serialize(
+    return serializer.serialize(
         [customer],
         fields=[
             "email",
@@ -165,7 +172,6 @@ def generate_customer_payload(customer: "User"):
             ),
         },
     )
-    return data
 
 
 def generate_product_payload(product: "Product"):
@@ -198,7 +204,7 @@ def generate_product_payload(product: "Product"):
         "private_metadata",
         "metadata",
     )
-    product_payload = serializer.serialize(
+    return serializer.serialize(
         [product],
         fields=product_fields,
         additional_fields={
@@ -207,7 +213,6 @@ def generate_product_payload(product: "Product"):
             "variants": (lambda p: p.variants.all(), product_variant_fields),
         },
     )
-    return product_payload
 
 
 def generate_fulfillment_lines_payload(fulfillment: Fulfillment):
@@ -242,7 +247,7 @@ def generate_fulfillment_payload(fulfillment: Fulfillment):
         warehouse = fulfillment_line.stock.warehouse
     else:
         warehouse = Warehouse.objects.for_country(order_country).first()
-    fulfillment_data = serializer.serialize(
+    return serializer.serialize(
         [fulfillment],
         fields=fulfillment_fields,
         additional_fields={
@@ -253,13 +258,11 @@ def generate_fulfillment_payload(fulfillment: Fulfillment):
             "lines": json.loads(generate_fulfillment_lines_payload(fulfillment)),
         },
     )
-    return fulfillment_data
 
 
 def _get_sample_object(qs: QuerySet):
     """Return random object from query."""
-    random_object = qs.order_by("?").first()
-    return random_object
+    return qs.order_by("?").first()
 
 
 def _generate_sample_order_payload(event_name):

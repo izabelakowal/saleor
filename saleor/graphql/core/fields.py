@@ -160,7 +160,7 @@ class FilterInputConnectionField(PrefetchingConnectionField):
         first = args.get("first")
         last = args.get("last")
 
-        if enforce_first_or_last and not (first or last):
+        if enforce_first_or_last and not first and not last:
             raise GraphQLError(
                 f"You must provide a `first` or `last` value to properly paginate "
                 f"the `{info.field_name}` connection."

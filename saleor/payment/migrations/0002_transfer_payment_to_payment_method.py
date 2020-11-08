@@ -40,9 +40,7 @@ def get_charge_status(payment):
 def get_is_active(status, payment):
     if status == PaymentStatus.INPUT:
         return False
-    if status == PaymentStatus.REFUNDED and is_fully_refunded(payment):
-        return False
-    return True
+    return status != PaymentStatus.REFUNDED or not is_fully_refunded(payment)
 
 
 def create_transaction(method, kind, created, amount, is_success, currency, token):

@@ -72,5 +72,4 @@ def get_margin_for_variant(variant: "ProductVariant") -> Optional[float]:
     if not base_price:
         return None
     margin = base_price - variant.cost_price
-    percent = round((margin / base_price) * 100, 0)
-    return percent
+    return round((margin / base_price) * 100, 0)

@@ -10,18 +10,17 @@ if TYPE_CHECKING:
 def filter_plugin_search(
     plugins: List["BasePlugin"], value: Optional[str]
 ) -> List["BasePlugin"]:
-    plugin_fields = ["PLUGIN_NAME", "PLUGIN_DESCRIPTION"]
     if value is not None:
+        plugin_fields = ["PLUGIN_NAME", "PLUGIN_DESCRIPTION"]
         return [
             plugin
             for plugin in plugins
             if any(
-                [
-                    value.lower() in getattr(plugin, field).lower()
-                    for field in plugin_fields
-                ]
+                value.lower() in getattr(plugin, field).lower()
+                for field in plugin_fields
             )
         ]
+
     return plugins
 
 

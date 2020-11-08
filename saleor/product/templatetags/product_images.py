@@ -12,11 +12,11 @@ register = template.Library()
 
 # cache available sizes at module level
 def get_available_sizes():
-    rendition_sizes = {}
     keys = settings.VERSATILEIMAGEFIELD_RENDITION_KEY_SETS
-    for dummy_size_group, sizes in keys.items():
-        rendition_sizes[dummy_size_group] = {size for _, size in sizes}
-    return rendition_sizes
+    return {
+        dummy_size_group: {size for _, size in sizes}
+        for dummy_size_group, sizes in keys.items()
+    }
 
 
 AVAILABLE_SIZES = get_available_sizes()
@@ -49,7 +49,7 @@ def get_available_sizes_by_method(method, rendition_key_set):
     for available_size in AVAILABLE_SIZES[rendition_key_set]:
         available_method, avail_size_str = available_size.split("__")
         if available_method == method:
-            sizes.append(min([int(s) for s in avail_size_str.split("x")]))
+            sizes.append(min(int(s) for s in avail_size_str.split("x")))
     return sizes
 
 
@@ -59,10 +59,7 @@ def get_thumbnail_size(size, method, rendition_key_set):
     Otherwise, return the closest smaller size
     """
     on_demand = settings.VERSATILEIMAGEFIELD_SETTINGS["create_images_on_demand"]
-    if isinstance(size, int):
-        size_str = "%sx%s" % (size, size)
-    else:
-        size_str = size
+    size_str = "%sx%s" % (size, size) if isinstance(size, int) else size
     size_name = "%s__%s" % (method, size_str)
     if size_name in AVAILABLE_SIZES[rendition_key_set] or on_demand:
         return size_str

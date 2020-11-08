@@ -43,8 +43,7 @@ def get_output_fields(model, return_field_name):
         raise ImproperlyConfigured(
             "Unable to find type for model %s in graphene registry" % model.__name__
         )
-    fields = {return_field_name: graphene.Field(model_type)}
-    return fields
+    return {return_field_name: graphene.Field(model_type)}
 
 
 def get_error_fields(error_type_class, error_type_field):
@@ -217,10 +216,12 @@ class BaseMutation(graphene.Mutation):
             if hasattr(cls._meta, "exclude"):
                 # Ignore validation errors for fields that are specified as
                 # excluded.
-                new_error_dict = {}
-                for field, errors in error.error_dict.items():
-                    if field not in cls._meta.exclude:
-                        new_error_dict[field] = errors
+                new_error_dict = {
+                    field: errors
+                    for field, errors in error.error_dict.items()
+                    if field not in cls._meta.exclude
+                }
+
                 error.error_dict = new_error_dict
 
             if error.error_dict:

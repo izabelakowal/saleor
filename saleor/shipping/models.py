@@ -59,10 +59,6 @@ def _get_weight_type_display(min_weight, max_weight):
             "%(min_weight)s and up" % {"min_weight": min_weight},
         )
     return ("Applies to orders of total weight within this range",)
-    "%(min_weight)s to %(max_weight)s" % {
-        "min_weight": min_weight,
-        "max_weight": max_weight,
-    },
 
 
 class ShippingZone(models.Model):

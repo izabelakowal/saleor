@@ -139,7 +139,7 @@ def _get_page_info(matching_records, cursor, first, last):
     records_left = False
     if requested_count is not None:
         records_left = len(matching_records) > requested_count
-    has_pages_before = True if cursor else False
+    has_pages_before = bool(cursor)
     if first:
         page_info["has_next_page"] = records_left
         page_info["has_previous_page"] = has_pages_before
@@ -158,11 +158,7 @@ def _get_edges_for_connection(edge_type, qs, args, sorting_fields):
     cursor = after or before
     requested_count = first or last
 
-    if last:
-        start_slice, end_slice = 1, None
-    else:
-        start_slice, end_slice = 0, requested_count
-
+    start_slice, end_slice = (1, None) if last else (0, requested_count)
     matching_records = list(qs)
     if last:
         matching_records = list(reversed(matching_records))

@@ -24,8 +24,7 @@ def variant_with_no_attributes(category):
         product_type=product_type,
         category=category,
     )
-    variant = ProductVariant.objects.create(product=product, sku="123")
-    return variant
+    return ProductVariant.objects.create(product=product, sku="123")
 
 
 def test_generate_name_for_variant(
@@ -78,7 +77,7 @@ def test_generate_name_from_values_empty(variant_with_no_attributes):
 def test_product_type_update_changes_variant_name(product):
     new_name = "test_name"
     product_variant = product.variants.first()
-    assert not product_variant.name == new_name
+    assert product_variant.name != new_name
     attribute = product.product_type.variant_attributes.first()
     attribute_value = attribute.values.first()
     attribute_value.name = new_name

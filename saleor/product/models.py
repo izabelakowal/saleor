@@ -405,9 +405,7 @@ class ProductVariantQueryset(models.QuerySet):
         variants = super().bulk_create(
             objs, batch_size=batch_size, ignore_conflicts=ignore_conflicts
         )
-        product_ids = set()
-        for obj in objs:
-            product_ids.add(obj.product_id)
+        product_ids = {obj.product_id for obj in objs}
         product_ids = list(product_ids)
 
         from .tasks import update_products_minimal_variant_prices_of_catalogues_task
