@@ -84,8 +84,9 @@ def create_jwt_token(token_data):
     expiration_date = timezone.now() + timezone.timedelta(hours=1)
     token_kwargs = {"exp": expiration_date}
     token_kwargs.update(token_data)
-    token = jwt.encode(token_kwargs, settings.SECRET_KEY, algorithm="HS256").decode()
-    return token
+    return jwt.encode(
+        token_kwargs, settings.SECRET_KEY, algorithm="HS256"
+    ).decode()
 
 
 def decode_jwt_token(token):

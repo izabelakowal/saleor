@@ -43,7 +43,7 @@ from .utils import (
 
 @pytest.fixture
 def query_customer_with_filter():
-    query = """
+    return """
     query ($filter: CustomerFilterInput!, ) {
         customers(first: 5, filter: $filter) {
             totalCount
@@ -57,12 +57,11 @@ def query_customer_with_filter():
         }
     }
     """
-    return query
 
 
 @pytest.fixture
 def query_staff_users_with_filter():
-    query = """
+    return """
     query ($filter: StaffUserInput!, ) {
         staffUsers(first: 5, filter: $filter) {
             totalCount
@@ -76,7 +75,6 @@ def query_staff_users_with_filter():
         }
     }
     """
-    return query
 
 
 def test_create_token_mutation(api_client, staff_user, settings):
@@ -557,7 +555,7 @@ def test_query_customers(staff_api_client, user_api_client, permission_manage_us
     content = get_graphql_content(response)
     users = content["data"]["customers"]["edges"]
     assert users
-    assert all([not user["node"]["isStaff"] for user in users])
+    assert all(not user["node"]["isStaff"] for user in users)
 
     # check permissions
     response = user_api_client.post_graphql(query, variables)
@@ -588,7 +586,7 @@ def test_query_staff(
     assert len(data) == 2
     staff_emails = [user["node"]["email"] for user in data]
     assert sorted(staff_emails) == [admin_user.email, staff_user.email]
-    assert all([user["node"]["isStaff"] for user in data])
+    assert all(user["node"]["isStaff"] for user in data)
 
     # check permissions
     response = user_api_client.post_graphql(query, variables)

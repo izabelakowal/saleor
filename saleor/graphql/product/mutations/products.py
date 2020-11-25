@@ -794,10 +794,9 @@ class ProductCreate(ModelMutation):
         cls, attributes: dict, product_type: models.ProductType
     ) -> T_INPUT_MAP:
         attributes_qs = product_type.product_attributes
-        attributes = AttributeAssignmentMixin.clean_input(
+        return AttributeAssignmentMixin.clean_input(
             attributes, attributes_qs, is_variant=False
         )
-        return attributes
 
     @classmethod
     def clean_input(cls, info, instance, data):
@@ -1132,10 +1131,9 @@ class ProductVariantCreate(ModelMutation):
         cls, attributes: dict, product_type: models.ProductType
     ) -> T_INPUT_MAP:
         attributes_qs = product_type.variant_attributes
-        attributes = AttributeAssignmentMixin.clean_input(
+        return AttributeAssignmentMixin.clean_input(
             attributes, attributes_qs, is_variant=True
         )
-        return attributes
 
     @classmethod
     def validate_duplicated_attribute_values(

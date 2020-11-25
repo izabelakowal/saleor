@@ -64,7 +64,7 @@ def allocate_stock(
             if quantity_allocated == quantity:
                 Allocation.objects.bulk_create(allocations)
                 break
-    if not quantity_allocated == quantity:
+    if quantity_allocated != quantity:
         raise InsufficientStock(order_line.variant)
 
 
@@ -96,7 +96,7 @@ def deallocate_stock(order_line: "OrderLine", quantity: int):
             if quantity_dealocated == quantity:
                 Allocation.objects.bulk_update(allocations, ["quantity_allocated"])
                 break
-    if not quantity_dealocated == quantity:
+    if quantity_dealocated != quantity:
         raise AllocationError(order_line, quantity)
 
 

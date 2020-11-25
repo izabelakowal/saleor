@@ -147,7 +147,7 @@ def create_transaction(
             raw_response={},
         )
 
-    txn = Transaction.objects.create(
+    return Transaction.objects.create(
         payment=payment,
         action_required=action_required,
         kind=gateway_response.kind,
@@ -159,7 +159,6 @@ def create_transaction(
         customer_id=gateway_response.customer_id,
         gateway_response=gateway_response.raw_response or {},
     )
-    return txn
 
 
 def clean_capture(payment: Payment, amount: Decimal):

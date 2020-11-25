@@ -162,17 +162,15 @@ def filter_collections(qs, _, value):
 
 
 def filter_price(qs, _, value):
-    qs = filter_products_by_price(
+    return filter_products_by_price(
         qs, price_lte=value.get("lte"), price_gte=value.get("gte")
     )
-    return qs
 
 
 def filter_minimal_price(qs, _, value):
-    qs = filter_products_by_minimal_price(
+    return filter_products_by_minimal_price(
         qs, minimal_price_lte=value.get("lte"), minimal_price_gte=value.get("gte")
     )
-    return qs
 
 
 def filter_stock_availability(qs, _, value):

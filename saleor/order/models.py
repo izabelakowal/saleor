@@ -201,8 +201,7 @@ class Order(ModelWithMetadata):
             ]
         )
         total_captured = [payment.get_captured_amount() for payment in payments]
-        total_paid = sum(total_captured, zero_taxed_money())
-        return total_paid
+        return sum(total_captured, zero_taxed_money())
 
     def _index_billing_phone(self):
         return self.billing_address.phone
@@ -245,7 +244,7 @@ class Order(ModelWithMetadata):
 
     @property
     def quantity_fulfilled(self):
-        return sum([line.quantity_fulfilled for line in self])
+        return sum(line.quantity_fulfilled for line in self)
 
     def is_shipping_required(self):
         return any(line.is_shipping_required for line in self)
@@ -255,7 +254,7 @@ class Order(ModelWithMetadata):
         return sum(subtotal_iterator, zero_taxed_money())
 
     def get_total_quantity(self):
-        return sum([line.quantity for line in self])
+        return sum(line.quantity for line in self)
 
     def is_draft(self):
         return self.status == OrderStatus.DRAFT
@@ -454,7 +453,7 @@ class Fulfillment(ModelWithMetadata):
         return self.status != FulfillmentStatus.CANCELED
 
     def get_total_quantity(self):
-        return sum([line.quantity for line in self])
+        return sum(line.quantity for line in self)
 
 
 class FulfillmentLine(models.Model):

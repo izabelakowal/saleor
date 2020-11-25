@@ -44,8 +44,7 @@ class Command(BaseCommand):
                 )
 
     def clean_permissions(self, required_permissions: List[str]) -> List[Permission]:
-        permissions = get_permissions(required_permissions)
-        return permissions
+        return get_permissions(required_permissions)
 
     def send_app_data(self, target_url, data: Dict[str, Any]):
         domain = Site.objects.get_current().domain

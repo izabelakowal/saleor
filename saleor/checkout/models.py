@@ -159,7 +159,7 @@ class Checkout(ModelWithMetadata):
             return saved_country.code
 
         country_code = address.country.code
-        if not country_code == saved_country.code:
+        if country_code != saved_country.code:
             self.set_country(country_code, commit=True)
         return country_code
 

@@ -145,13 +145,12 @@ def schema_context():
 
 @pytest.fixture
 def superuser():
-    superuser = User.objects.create_superuser("superuser@example.com", "pass")
-    return superuser
+    return User.objects.create_superuser("superuser@example.com", "pass")
 
 
 @pytest.fixture
 def user_list():
-    users = User.objects.bulk_create(
+    return User.objects.bulk_create(
         [
             User(email="user-2@example.com"),
             User(email="user-1@example.com"),
@@ -159,7 +158,6 @@ def user_list():
             User(email="staff-2@example.com", is_staff=True),
         ]
     )
-    return users
 
 
 @pytest.fixture

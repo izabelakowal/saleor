@@ -214,9 +214,9 @@ def create_products(products_data, placeholder_dir, create_images):
         defaults["weight"] = get_weight(defaults["weight"])
         defaults["category_id"] = defaults.pop("category")
         defaults["product_type_id"] = defaults.pop("product_type")
-        product, _ = Product.objects.update_or_create(pk=pk, defaults=defaults)
-
         if create_images:
+            product, _ = Product.objects.update_or_create(pk=pk, defaults=defaults)
+
             images = IMAGES_MAPPING.get(pk, [])
             for image_name in images:
                 create_product_image(product, placeholder_dir, image_name)
@@ -456,7 +456,7 @@ def create_order_lines(order, discounts, how_many=10):
     )
     variants_iter = itertools.cycle(variants)
     lines = []
-    for dummy in range(how_many):
+    for _ in range(how_many):
         variant = next(variants_iter)
         product = variant.product
         quantity = random.randrange(1, 5)
@@ -547,7 +547,7 @@ def create_fake_order(discounts, max_order_lines=5):
     order = Order.objects.create(**order_data)
 
     lines = create_order_lines(order, discounts, random.randrange(1, max_order_lines))
-    order.total = sum([line.get_total() for line in lines], shipping_price)
+    order.total = sum((line.get_total() for line in lines), shipping_price)
     weight = Weight(kg=0)
     for line in order:
         weight += line.variant.get_weight()
@@ -571,7 +571,7 @@ def create_fake_sale():
 
 
 def create_users(how_many=10):
-    for dummy in range(how_many):
+    for _ in range(how_many):
         user = create_fake_user()
         yield "User: %s" % (user.email,)
 
@@ -635,7 +635,7 @@ def create_orders(how_many=10):
 
 
 def create_product_sales(how_many=5):
-    for dummy in range(how_many):
+    for _ in range(how_many):
         sale = create_fake_sale()
         update_products_minimal_variant_prices_of_discount_task.delay(sale.pk)
         yield "Sale: %s" % (sale,)
@@ -1165,8 +1165,7 @@ def generate_menu_tree(menu):
     )
 
     for category in categories:
-        for msg in generate_menu_items(menu, category, None):
-            yield msg
+        yield from generate_menu_items(menu, category, None)
 
 
 def create_menus():
@@ -1176,9 +1175,7 @@ def create_menus():
     )
     top_menu.items.all().delete()
     yield "Created navbar menu"
-    for msg in generate_menu_tree(top_menu):
-        yield msg
-
+    yield from generate_menu_tree(top_menu)
     # Create footer menu with collections and pages
     bottom_menu, _ = Menu.objects.get_or_create(
         name=settings.DEFAULT_MENUS["bottom_menu_name"]
@@ -1215,8 +1212,7 @@ def create_menus():
 
 
 def get_product_list_images_dir(placeholder_dir):
-    product_list_images_dir = os.path.join(placeholder_dir, PRODUCTS_LIST_DIR)
-    return product_list_images_dir
+    return os.path.join(placeholder_dir, PRODUCTS_LIST_DIR)
 
 
 def get_image(image_dir, image_name):

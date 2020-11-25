@@ -101,9 +101,7 @@ def _validate_adddress_details(
         return False
     if not shipping_address:
         return False
-    if not shipping_method:
-        return False
-    return True
+    return bool(shipping_method)
 
 
 def _validate_order(order: "Order") -> bool:
@@ -133,8 +131,7 @@ def _validate_checkout(checkout: "Checkout") -> bool:
 
 def _retrieve_from_cache(token):
     taxes_cache_key = CACHE_KEY + token
-    cached_data = cache.get(taxes_cache_key)
-    return cached_data
+    return cache.get(taxes_cache_key)
 
 
 def checkout_needs_new_fetch(data, checkout_token: str) -> bool:
@@ -150,9 +147,7 @@ def checkout_needs_new_fetch(data, checkout_token: str) -> bool:
         return True
 
     cached_request_data, cached_response = cached_checkout
-    if data != cached_request_data:
-        return True
-    return False
+    return data != cached_request_data
 
 
 def taxes_need_new_fetch(data: Dict[str, Any], taxes_token: str) -> bool:
@@ -167,9 +162,7 @@ def taxes_need_new_fetch(data: Dict[str, Any], taxes_token: str) -> bool:
         return True
 
     cached_request_data, _ = cached_data
-    if data != cached_request_data:
-        return True
-    return False
+    return data != cached_request_data
 
 
 def append_line_to_data(
@@ -343,7 +336,7 @@ def generate_request_data_from_checkout(
     lines = get_checkout_lines_data(checkout, discounts)
 
     currency = checkout.currency
-    data = generate_request_data(
+    return generate_request_data(
         transaction_type=transaction_type,
         lines=lines,
         transaction_token=transaction_token or str(checkout.token),
@@ -353,7 +346,6 @@ def generate_request_data_from_checkout(
         config=config,
         currency=currency,
     )
-    return data
 
 
 def _fetch_new_taxes_data(
@@ -415,18 +407,17 @@ def get_order_tax_data(
         config=config,
         currency=order.total.currency,
     )
-    response = get_cached_response_or_fetch(
+    return get_cached_response_or_fetch(
         data, "order_%s" % order.token, config, force_refresh
     )
-    return response
 
 
 def generate_tax_codes_dict(response: Dict[str, Any]) -> Dict[str, str]:
-    tax_codes = {}
-    for line in response.get("value", []):
-        if line.get("isActive"):
-            tax_codes[line.get("taxCode")] = line.get("description")
-    return tax_codes
+    return {
+        line.get("taxCode"): line.get("description")
+        for line in response.get("value", [])
+        if line.get("isActive")
+    }
 
 
 def get_cached_tax_codes_or_fetch(

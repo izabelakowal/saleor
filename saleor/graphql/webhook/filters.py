@@ -7,8 +7,7 @@ from ..utils import filter_by_query_param
 
 def filter_webhook_search(qs, _, value):
     page_fields = ["name", "target_url"]
-    qs = filter_by_query_param(qs, value, page_fields)
-    return qs
+    return filter_by_query_param(qs, value, page_fields)
 
 
 class WebhookFilter(django_filters.FilterSet):

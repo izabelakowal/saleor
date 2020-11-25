@@ -280,9 +280,7 @@ class StaffUpdate(StaffCreate):
 
         cls.check_for_duplicates(data)
 
-        cleaned_input = super().clean_input(info, instance, data)
-
-        return cleaned_input
+        return super().clean_input(info, instance, data)
 
     @classmethod
     def check_for_duplicates(cls, input_data):

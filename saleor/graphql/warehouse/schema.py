@@ -34,8 +34,7 @@ class WarehouseQueries(graphene.ObjectType):
     @permission_required(ProductPermissions.MANAGE_PRODUCTS)
     def resolve_warehouse(self, info, **data):
         warehouse_pk = data.get("id")
-        warehouse = graphene.Node.get_node_from_global_id(info, warehouse_pk, Warehouse)
-        return warehouse
+        return graphene.Node.get_node_from_global_id(info, warehouse_pk, Warehouse)
 
     @permission_required(ProductPermissions.MANAGE_PRODUCTS)
     def resolve_warehouses(self, info, **_kwargs):
@@ -63,8 +62,7 @@ class StockQueries(graphene.ObjectType):
     @permission_required(ProductPermissions.MANAGE_PRODUCTS)
     def resolve_stock(self, info, **kwargs):
         stock_id = kwargs.get("id")
-        stock = graphene.Node.get_node_from_global_id(info, stock_id, Stock)
-        return stock
+        return graphene.Node.get_node_from_global_id(info, stock_id, Stock)
 
     @permission_required(ProductPermissions.MANAGE_PRODUCTS)
     def resolve_stocks(self, info, **_kwargs):

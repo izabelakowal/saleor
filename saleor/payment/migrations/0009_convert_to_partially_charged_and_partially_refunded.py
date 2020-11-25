@@ -8,9 +8,7 @@ CHARGED = "charged"
 
 
 def is_fully_charged(payment):
-    if payment.total - payment.captured_amount > 0:
-        return False
-    return True
+    return payment.total - payment.captured_amount <= 0
 
 
 def convert_charged_to_paritally_charged_and_partially_refunded(apps, schema_editor):

@@ -278,8 +278,8 @@ def _create_fulfillment_lines(
     fulfillment_lines = []
     for line in lines:
         quantity = line["quantity"]
-        order_line = line["order_line"]
         if quantity > 0:
+            order_line = line["order_line"]
             fulfill_order_line(order_line, quantity, warehouse_pk)
             if order_line.is_digital:
                 order_line.variant.digital_content.urls.create(line=order_line)

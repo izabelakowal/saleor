@@ -80,11 +80,11 @@ class WeightScalar(graphene.Scalar):
         unit = get_default_weight_unit()
 
         for field in node.fields:
-            if field.name.value == "value":
+            if field.name.value == "unit":
+                unit = field.value.value
+            elif field.name.value == "value":
                 try:
                     value = decimal.Decimal(field.value.value)
                 except decimal.DecimalException:
                     raise GraphQLError(f"Unsupported value: {field.value.value}")
-            if field.name.value == "unit":
-                unit = field.value.value
         return Weight(**{unit: value})

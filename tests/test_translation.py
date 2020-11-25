@@ -74,7 +74,7 @@ def test_translation_not_override_id(settings, product, product_translation_fr):
     settings.LANGUAGE_CODE = "fr"
     translated_product = product.translated
     assert translated_product.id == product.id
-    assert not translated_product.id == product_translation_fr
+    assert translated_product.id != product_translation_fr
 
 
 def test_collection_translation(settings, collection):
@@ -113,20 +113,20 @@ def test_attribute_translation(settings, color_attribute):
     AttributeTranslation.objects.create(
         language_code="fr", attribute=color_attribute, name="French name"
     )
-    assert not color_attribute.translated.name == "French name"
+    assert color_attribute.translated.name != "French name"
     settings.LANGUAGE_CODE = "fr"
     assert color_attribute.translated.name == "French name"
 
 
 def test_attribute_value_translation(settings, product, attribute_value_translation_fr):
     attribute = product.product_type.product_attributes.first().values.first()
-    assert not attribute.translated.name == "French name"
+    assert attribute.translated.name != "French name"
     settings.LANGUAGE_CODE = "fr"
     assert attribute.translated.name == "French name"
 
 
 def test_voucher_translation(settings, voucher, voucher_translation_fr):
-    assert not voucher.translated.name == "French name"
+    assert voucher.translated.name != "French name"
     settings.LANGUAGE_CODE = "fr"
     assert voucher.translated.name == "French name"
 
@@ -134,6 +134,6 @@ def test_voucher_translation(settings, voucher, voucher_translation_fr):
 def shipping_method_translation(
     settings, shipping_method, shipping_method_translation_fr
 ):
-    assert not shipping_method.translated.name == "French name"
+    assert shipping_method.translated.name != "French name"
     settings.LANGUAGE_CODE = "fr"
     assert shipping_method.translated.name == "French name"

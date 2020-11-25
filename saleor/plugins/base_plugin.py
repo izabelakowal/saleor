@@ -393,7 +393,7 @@ class BasePlugin:
         desired_config_keys = set(config_structure.keys())
 
         config = configuration or []
-        configured_keys = set(d["name"] for d in config)
+        configured_keys = {d["name"] for d in config}
         missing_keys = desired_config_keys - configured_keys
 
         if not missing_keys:

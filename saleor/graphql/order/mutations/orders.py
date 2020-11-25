@@ -158,11 +158,11 @@ class OrderUpdate(DraftOrderUpdate):
 
         # We must to filter out field added by DraftOrderUpdate
         editable_fields = ["billing_address", "shipping_address", "user_email"]
-        cleaned_input = {}
-        for key in draft_order_cleaned_input:
-            if key in editable_fields:
-                cleaned_input[key] = draft_order_cleaned_input[key]
-        return cleaned_input
+        return {
+            key: draft_order_cleaned_input[key]
+            for key in draft_order_cleaned_input
+            if key in editable_fields
+        }
 
     @classmethod
     def save(cls, info, instance, cleaned_input):

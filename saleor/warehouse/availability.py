@@ -96,7 +96,7 @@ def are_all_product_variants_in_stock(product: "Product", country_code: str) -> 
         .values_list("available_quantity", "product_variant_id")
         .all()
     )
-    are_all_available = all([elem[0] for elem in product_stocks])
+    are_all_available = all(elem[0] for elem in product_stocks)
     variants_with_stocks = [elem[1] for elem in product_stocks]
 
     product_variants = product.variants.exclude(id__in=variants_with_stocks).exists()

@@ -49,9 +49,10 @@ class Wishlist(models.Model):
 class WishlistItemQuerySet(models.QuerySet):
     @transaction.atomic()
     def move_items_between_wishlists(self, src_wishlist, dst_wishlist):
-        dst_wishlist_map = {}
-        for dst_item in dst_wishlist.items.all():
-            dst_wishlist_map[dst_item.product_id] = dst_item
+        dst_wishlist_map = {
+            dst_item.product_id: dst_item for dst_item in dst_wishlist.items.all()
+        }
+
         # Copying the items from the source to the destination wishlist.
         for src_item in src_wishlist.items.all():
             if src_item.product_id in dst_wishlist_map:

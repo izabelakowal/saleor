@@ -39,17 +39,15 @@ def order_line_needs_automatic_fulfillment(line: OrderLine) -> bool:
         return False
     if default_automatic_fulfillment and content.use_default_settings:
         return True
-    if content.automatic_fulfillment:
-        return True
-    return False
+    return bool(content.automatic_fulfillment)
 
 
 def order_needs_automatic_fullfilment(order: Order) -> bool:
     """Check if order has digital products which should be automatically fulfilled."""
-    for line in order.lines.digital():
-        if order_line_needs_automatic_fulfillment(line):
-            return True
-    return False
+    return any(
+        order_line_needs_automatic_fulfillment(line)
+        for line in order.lines.digital()
+    )
 
 
 def update_voucher_discount(func):
@@ -296,7 +294,7 @@ def restock_fulfillment_lines(fulfillment):
 def sum_order_totals(qs):
     zero = Money(0, currency=settings.DEFAULT_CURRENCY)
     taxed_zero = TaxedMoney(zero, zero)
-    return sum([order.total for order in qs], taxed_zero)
+    return sum((order.total for order in qs), taxed_zero)
 
 
 def get_valid_shipping_methods_for_order(order: Order):

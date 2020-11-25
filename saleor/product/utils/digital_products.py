@@ -37,9 +37,7 @@ def digital_content_url_is_valid(content_url: DigitalContentUrl) -> bool:
         if now() > valid_until:
             return False
 
-    if max_downloads is not None and max_downloads <= content_url.download_num:
-        return False
-    return True
+    return max_downloads is None or max_downloads > content_url.download_num
 
 
 def increment_download_count(content_url: DigitalContentUrl):

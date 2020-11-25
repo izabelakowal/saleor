@@ -4,14 +4,14 @@ from ..menu.models import Menu
 
 
 def get_menu_item_as_dict(menu_item):
-    data = {}
-    data["url"] = menu_item.url or ""
-    data["name"] = menu_item.name
-    data["translations"] = {
-        translated.language_code: {"name": translated.name}
-        for translated in menu_item.translations.all()
+    return {
+        "url": menu_item.url or "",
+        "name": menu_item.name,
+        "translations": {
+            translated.language_code: {"name": translated.name}
+            for translated in menu_item.translations.all()
+        },
     }
-    return data
 
 
 def get_menu_as_json(menu):

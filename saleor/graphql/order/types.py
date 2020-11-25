@@ -123,10 +123,7 @@ class OrderEvent(CountableDjangoObjectType):
         if not raw_lines:
             return None
 
-        line_pks = []
-        for entry in raw_lines:
-            line_pks.append(entry.get("line_pk", None))
-
+        line_pks = [entry.get("line_pk", None) for entry in raw_lines]
         lines = models.OrderLine.objects.filter(pk__in=line_pks).all()
         results = []
         for raw_line, line_pk in zip(raw_lines, line_pks):
@@ -478,10 +475,7 @@ class Order(CountableDjangoObjectType):
             taxed_price = manager.apply_taxes_to_shipping(
                 shipping_method.price, root.shipping_address  # type: ignore
             )
-            if display_gross:
-                shipping_method.price = taxed_price.gross
-            else:
-                shipping_method.price = taxed_price.net
+            shipping_method.price = taxed_price.gross if display_gross else taxed_price.net
         return available
 
     @staticmethod

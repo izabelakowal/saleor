@@ -129,10 +129,7 @@ def resolve_payment_sources(user: models.User):
 
 
 def prepare_graphql_payment_sources_type(payment_sources):
-    sources = []
-    for src in payment_sources:
-        sources.append(
-            {
+    return [{
                 "gateway": src.gateway,
                 "credit_card_info": {
                     "last_digits": src.credit_card_info.last_4,
@@ -141,9 +138,7 @@ def prepare_graphql_payment_sources_type(payment_sources):
                     "brand": "",
                     "first_digits": "",
                 },
-            }
-        )
-    return sources
+            } for src in payment_sources]
 
 
 def resolve_address(info, id):

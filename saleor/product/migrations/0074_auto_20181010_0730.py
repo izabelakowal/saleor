@@ -74,7 +74,7 @@ def migrate_attributes_hstore_to_new_ids(apps, schema_editor):
                 for old_attr_pk, old_val_pk in variant.attributes.items():
                     old_attr = attributes_map.get(old_attr_pk)
                     old_val = values_map.get(old_val_pk)
-                    if not (old_attr and old_val):
+                    if not old_attr or not old_val:
                         continue
                     new_attr = product_type.temp_variant_attributes.filter(
                         slug=old_attr.slug

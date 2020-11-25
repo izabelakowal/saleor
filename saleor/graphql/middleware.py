@@ -43,18 +43,17 @@ def get_app(auth_token) -> Optional[App]:
 
 def app_middleware(next, root, info, **kwargs):
 
-    app_auth_header = "HTTP_AUTHORIZATION"
-    prefix = "bearer"
     request = info.context
 
-    if request.path == API_PATH:
-        if not hasattr(request, "app"):
-            request.app = None
-            auth = request.META.get(app_auth_header, "").split()
-            if len(auth) == 2:
-                auth_prefix, auth_token = auth
-                if auth_prefix.lower() == prefix:
-                    request.app = SimpleLazyObject(lambda: get_app(auth_token))
+    if request.path == API_PATH and not hasattr(request, "app"):
+        request.app = None
+        app_auth_header = "HTTP_AUTHORIZATION"
+        auth = request.META.get(app_auth_header, "").split()
+        if len(auth) == 2:
+            auth_prefix, auth_token = auth
+            prefix = "bearer"
+            if auth_prefix.lower() == prefix:
+                request.app = SimpleLazyObject(lambda: get_app(auth_token))
     return next(root, info, **kwargs)
 
 

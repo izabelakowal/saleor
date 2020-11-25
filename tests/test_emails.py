@@ -50,7 +50,7 @@ def test_collect_data_for_fullfillment_email(fulfilled_order):
     email_context = fulfillment_data["context"]
     assert email_context["fulfillment"] == fulfillment
     email_data = emails.collect_data_for_email(fulfilled_order.pk, template)
-    assert all([key in email_context for key, item in email_data["context"].items()])
+    assert all(key in email_context for key, item in email_data["context"].items())
 
 
 def test_collect_data_for_email(order):

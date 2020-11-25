@@ -158,11 +158,10 @@ def test_cancel_fulfillment(fulfilled_order):
 def test_cancel_order(fulfilled_order):
     cancel_order(fulfilled_order, None, restock=False)
     assert all(
-        [
-            f.status == FulfillmentStatus.CANCELED
-            for f in fulfilled_order.fulfillments.all()
-        ]
+        f.status == FulfillmentStatus.CANCELED
+        for f in fulfilled_order.fulfillments.all()
     )
+
     assert fulfilled_order.status == OrderStatus.CANCELED
 
 

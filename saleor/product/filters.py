@@ -32,8 +32,7 @@ def filter_products_by_attributes_values(qs, queries: T_PRODUCT_FILTER_QUERIES):
         for _, values_pk in queries.items()
     ]
     query = functools.reduce(operator.and_, combine_and)
-    qs = qs.filter(query).distinct()
-    return qs
+    return qs.filter(query).distinct()
 
 
 class AttributeValuesFilter(MultipleChoiceFilter):
@@ -60,13 +59,11 @@ class ProductFilter(SortedFilterSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         attributes = self._get_attributes()
-        filters = {}
-        for attribute in attributes:
-            filters[attribute.slug] = AttributeValuesFilter(
+        filters = {attribute.slug: AttributeValuesFilter(
                 label=attribute.translated.name,
                 widget=CheckboxSelectMultiple,
                 choices=self._get_attribute_choices(attribute),
-            )
+            ) for attribute in attributes}
         self.filters.update(filters)
 
     def _get_attributes(self):
